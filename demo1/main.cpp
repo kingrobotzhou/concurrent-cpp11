@@ -1,15 +1,18 @@
 #include <iostream>
 #include <thread>
+#include <atomic>
 #include <vector>
 #include <unistd.h>
 using namespace std;
-int n = 0;
+//使用原子声明，简化代码
+atomic<int> n;
+//int n = 0;
 std::mutex mu;
 void increase_number(){
     for (int i = 0; i < 1000000; i++){
-        mu.lock();
+//        mu.lock();
         n++;    
-        mu.unlock();
+//        mu.unlock();
     }
 }
 
