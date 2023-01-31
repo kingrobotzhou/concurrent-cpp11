@@ -18,9 +18,11 @@ int main(){
 
     //创建10个线程
     for (int i = 0; i < 10; i++){
-        threads.push_back(thread(increase_number,n));
+        threads.push_back(thread(increase_number));
     }
-
+    for (auto it = threads.begin(); it != threads.end(); it++){
+        it->join();
+    }
     // sleep(5);
     std::cout << "n = " << n << std::endl; 
 }
