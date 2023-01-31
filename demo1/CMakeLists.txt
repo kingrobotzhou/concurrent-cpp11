@@ -1,16 +1,13 @@
-cmake_minimum_required(VERSION 3.15)
-
-project ( testprj )
 
 set ( PRJ_COMPILE_FEATURES )
 
 list ( APPEND PRJ_COMPILE_FEATURES cxx_std_20 )
 
-add_executable( ${PROJECT_NAME}
+add_executable( demo1
     main.cpp
 )
 
-target_compile_features ( ${PROJECT_NAME} 
+target_compile_features (demo1
 	PRIVATE 
 		${PRJ_COMPILE_FEATURES}
 )
