@@ -8,3 +8,5 @@ list ( APPEND PRJ_COMPILE_FEATURES cxx_std_20 )
 
 add_subdirectory(demo1)
 add_subdirectory(demo2)
+add_subdirectory(demo3)
+add_subdirectory(demo4)
