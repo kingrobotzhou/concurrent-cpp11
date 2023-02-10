@@ -5,21 +5,20 @@ using namespace std;
 mutex m;//实例化m对象，不要理解为定义变量
 void proc1(int a)
 {
-    m.lock();
+    m.lock();//手动锁定
+    lock_guard<mutex> g1(m,adopt_lock);
     cout << "proc1函数正在改写a" << endl;
     cout << "原始a为" << a << endl;
     cout << "现在a为" << a + 2 << endl;
-    m.unlock();
-}
+}//自动解锁
 
 void proc2(int a)
 {
-    m.lock();
+    lock_guard<mutex> g2(m);//自动锁定
     cout << "proc2函数正在改写a" << endl;
     cout << "原始a为" << a << endl;
     cout << "现在a为" << a + 1 << endl;
-    m.unlock();
-}
+}//自动解锁
 int main()
 {
     int a = 0;

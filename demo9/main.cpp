@@ -2,27 +2,28 @@
 #include<thread>
 #include<mutex>
 using namespace std;
-mutex m;//实例化m对象，不要理解为定义变量
+mutex m;
 void proc1(int a)
 {
-    lock_guard<mutex> g1(m);//用此语句替换了m.lock()；lock_guard传入一个参数时，该参数为互斥量，此时调用了lock_guard的构造函数，申请锁定m
+    unique_lock<mutex> g1(m, defer_lock);//始化了一个没有加锁的mutex
+    cout << "不拉不拉不拉" << endl;
+    g1.lock();//手动加锁，注意，不是m.lock();注意，不是m.lock();注意，不是m.lock()
     cout << "proc1函数正在改写a" << endl;
     cout << "原始a为" << a << endl;
     cout << "现在a为" << a + 2 << endl;
-}//此时不需要写m.unlock(),g1出了作用域被释放，自动调用析构函数，于是m被解锁
+    g1.unlock();//临时解锁
+    cout << "不拉不拉不拉"  << endl;
+    g1.lock();
+    cout << "不拉不拉不拉" << endl;
+}//自动解锁
 
 void proc2(int a)
 {
-    {
-        lock_guard<mutex> g2(m);
-        cout << "proc2函数正在改写a" << endl;
-        cout << "原始a为" << a << endl;
-        cout << "现在a为" << a + 1 << endl;
-    }//通过使用{}来调整作用域范围，可使得m在合适的地方被解锁
-    cout << "作用域外的内容3" << endl;
-    cout << "作用域外的内容4" << endl;
-    cout << "作用域外的内容5" << endl;
-}
+    unique_lock<mutex> g2(m,try_to_lock);//尝试加锁，但如果没有锁定成功，会立即返回，不会阻塞在那里；
+    cout << "proc2函数正在改写a" << endl;
+    cout << "原始a为" << a << endl;
+    cout << "现在a为" << a + 1 << endl;
+}//自动解锁
 int main()
 {
     int a = 0;
