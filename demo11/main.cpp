@@ -2,12 +2,13 @@
 #include <thread>
 #include <mutex>
 #include<future>
-#include<Windows.h>
+// #include<Windows.h>
+#include <unistd.h>
 using namespace std;
 double t1(const double a, const double b)
 {
 	double c = a + b;
-	Sleep(3000);//假设t1函数是个复杂的计算过程，需要消耗3秒
+	sleep(3000);//假设t1函数是个复杂的计算过程，需要消耗3秒
 	return c;
 }
 
