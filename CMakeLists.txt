@@ -7,3 +7,4 @@ set ( PRJ_COMPILE_FEATURES )
 list ( APPEND PRJ_COMPILE_FEATURES cxx_std_20 )
 
 add_subdirectory(demo1)
+add_subdirectory(demo2)
