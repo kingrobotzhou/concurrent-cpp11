@@ -4,4 +4,4 @@ file(GLOB_RECURSE SOURCES
     ./*.cpp    
 )
 set(SRC_LIST main.cpp)
-add_executable(demo7 ${SRC_LIST})
+add_executable(demo9 ${SRC_LIST})
