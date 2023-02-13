@@ -1,35 +1,25 @@
-#include<iostream>
-#include<thread>
-#include<mutex>
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include<future>
+// #include<Windows.h>
+#include <unistd.h>
 using namespace std;
-mutex m;
-void proc1(int a)
+double t1(const double a, const double b)
 {
-    unique_lock<mutex> g1(m, defer_lock);//始化了一个没有加锁的mutex
-    cout << "不拉不拉不拉" << endl;
-    g1.lock();//手动加锁，注意，不是m.lock();注意，不是m.lock();注意，不是m.lock()
-    cout << "proc1函数正在改写a" << endl;
-    cout << "原始a为" << a << endl;
-    cout << "现在a为" << a + 2 << endl;
-    g1.unlock();//临时解锁
-    cout << "不拉不拉不拉"  << endl;
-    g1.lock();
-    cout << "不拉不拉不拉" << endl;
-}//自动解锁
+	double c = a + b;
+	sleep(3000);//假设t1函数是个复杂的计算过程，需要消耗3秒
+	return c;
+}
 
-void proc2(int a)
+int main() 
 {
-    unique_lock<mutex> g2(m,try_to_lock);//尝试加锁，但如果没有锁定成功，会立即返回，不会阻塞在那里；
-    cout << "proc2函数正在改写a" << endl;
-    cout << "原始a为" << a << endl;
-    cout << "现在a为" << a + 1 << endl;
-}//自动解锁
-int main()
-{
-    int a = 0;
-    thread proc1(proc1, a);
-    thread proc2(proc2, a);
-    proc1.join();
-    proc2.join();
-    return 0;
+	double a = 2.3;
+	double b = 6.7;
+	future<double> fu = async(t1, a, b);//创建异步线程线程，并将线程的执行结果用fu占位；
+	cout << "正在进行计算" << endl;
+	cout << "计算结果马上就准备好，请您耐心等待" << endl;
+	cout << "计算结果：" << fu.get() << endl;//阻塞主线程，直至异步线程return
+        //cout << "计算结果：" << fu.get() << endl;//取消该语句注释后运行会报错，因为future对象的get()方法只能调用一次。
+	return 0;
 }

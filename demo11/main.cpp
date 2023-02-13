@@ -1,25 +1,55 @@
+/*
+生产者消费者问题
+*/
 #include <iostream>
+#include <deque>
 #include <thread>
 #include <mutex>
-#include<future>
-// #include<Windows.h>
-#include <unistd.h>
+#include <condition_variable>
+#include<unistd.h>
 using namespace std;
-double t1(const double a, const double b)
-{
-	double c = a + b;
-	sleep(3000);//假设t1函数是个复杂的计算过程，需要消耗3秒
-	return c;
+
+deque<int> q;
+mutex mu;
+condition_variable cond;
+int c = 0;//缓冲区的产品个数
+
+void producer() { 
+	int data1;
+	while (1) {//通过外层循环，能保证生成用不停止
+		if(c < 3) {//限流
+			{
+				data1 = rand();
+				unique_lock<mutex> locker(mu);//锁
+				q.push_front(data1);
+				cout << "存了" << data1 << endl;
+				cond.notify_one();  // 通知取
+				++c;
+			}
+			sleep(500);
+		}
+	}
 }
 
-int main() 
-{
-	double a = 2.3;
-	double b = 6.7;
-	future<double> fu = async(t1, a, b);//创建异步线程线程，并将线程的执行结果用fu占位；
-	cout << "正在进行计算" << endl;
-	cout << "计算结果马上就准备好，请您耐心等待" << endl;
-	cout << "计算结果：" << fu.get() << endl;//阻塞主线程，直至异步线程return
-        //cout << "计算结果：" << fu.get() << endl;//取消该语句注释后运行会报错，因为future对象的get()方法只能调用一次。
+void consumer() {
+	int data2;//data用来覆盖存放取的数据
+	while (1) {
+		{
+			unique_lock<mutex> locker(mu);
+			while(q.empty())
+				cond.wait(locker); //wati()阻塞前先会解锁,解锁后生产者才能获得锁来放产品到缓冲区；生产者notify后，将不再阻塞，且自动又获得了锁。
+			data2 = q.back();//取的第一步
+			q.pop_back();//取的第二步
+			cout << "取了" << data2<<endl;
+			--c;
+		}
+		sleep(1500);
+	}
+}
+int main() {
+	thread t1(producer);
+	thread t2(consumer);
+	t1.join();
+	t2.join();
 	return 0;
 }

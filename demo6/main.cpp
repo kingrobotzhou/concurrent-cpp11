@@ -23,9 +23,9 @@ void proc2(int a)
 int main()
 {
     int a = 0;
-    thread proc1(proc1, a);
-    thread proc2(proc2, a);
-    proc1.join();
-    proc2.join();
+    thread thr1(proc1, a);
+    thread thr2(proc2, a);
+    thr1.join();
+    thr2.join();
     return 0;
 }
