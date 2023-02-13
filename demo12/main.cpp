@@ -21,6 +21,9 @@ int main()
  
     std::mutex mtx;
     std::unique_lock<std::mutex> lck(mtx);
+	/*
+	wait()函数因为没有条件判断，因此有时候会产生虚假唤醒，而有条件的等待可以很好的解决这一问题
+	*/
     cv.wait(lck);
     std::cout << "You entered: " << value << '\n';
  
